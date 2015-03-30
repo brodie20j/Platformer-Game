@@ -1,8 +1,8 @@
-             [cb]
 
 
-       [cb]   [sb][mb][sb][cb][sb]                                                          [sb][sb]            [cb][cb][cb]     [mb]    [cb]    [cb]       [eb]
 
-          [eg]      [eg]       [kg]                                           [eg]      [ek]         [ek]
-[gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]  [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]    [gb][gb][gb][gb][gb]    [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]    [gb][gb][gb]    [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]
+
+
+     ccccc     [eg]      [eg]       [kg]                                           [eg]      [ek]         [ek]
+bbbbbbbbbbbbbbbbbbbbbb[gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]  [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]    [gb][gb][gb][gb][gb]    [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]    [gb][gb][gb]    [gb][gb][gb][gb][gb][gb][gb][gb][gb][gb]
 [db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db][db]  [db][db][db][db][db][db][db][db][db][db][db]    [db][db][db][db][db]    [db][db][db][db][db][db][db][db][db][db]    [db][db][db]    [db][db][db][db][db][db][db][db][db][db]

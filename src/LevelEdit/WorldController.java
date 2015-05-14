@@ -58,7 +58,7 @@ public class WorldController {
 
     private final List<String> typeList=Arrays.asList("Object","Enemy","Block");
     private final List<String> blockList=Arrays.asList("Block","Breakable Block");
-    private final List<String> objectList=Arrays.asList("Chest", "Coin", "Health Potion");
+    private final List<String> objectList=Arrays.asList("Chest", "Coin", "Health Potion","Door");
     private final List<String> enemyList=Arrays.asList("Enemy","Koopa");
     private Hashtable<String, Class> idMap=new Hashtable<String, Class>();
     private PreviewEngine previewEngine;
@@ -79,6 +79,8 @@ public class WorldController {
         this.idMap.put("Health Potion", HealthPotion.class);
         this.idMap.put("Breakable Block", BreakableBlock.class);
         this.idMap.put("Chest", Chest.class);
+        this.idMap.put("Door", Door.class);
+
         this.previewPane.setPrefSize(300,300);
 
         mainMenuLabel.setTextFill(Color.BLACK);

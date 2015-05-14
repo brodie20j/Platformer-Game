@@ -12,6 +12,7 @@ public class Object extends Group {
     @FXML
     private double velocityX;
     @FXML private double velocityY;
+    private int layer=0;
 
     private boolean solid=false;
     public boolean inAir=true;
@@ -23,6 +24,12 @@ public class Object extends Group {
         this.setLayoutX(0);
         this.setLayoutY(0);
 
+    }
+    public void setLayer(int nLayer) {
+        this.layer=nLayer;
+    }
+    public int getLayer() {
+        return this.layer;
     }
     public double getWidth() {
         return this.getBoundsInParent().getWidth();

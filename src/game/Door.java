@@ -8,7 +8,7 @@ import javafx.scene.image.ImageView;
  *
  * Door
  * =====
- * Acts as a portal between two locations on a map when a player presses up
+ * Acts as a portal to another location a map when a player presses up
  */
 
 public class Door extends Object {
@@ -18,7 +18,7 @@ public class Door extends Object {
 
 
     public Door() {
-        Image image = new Image(getClass().getResourceAsStream("/res/img/chest-closed.png"));
+        Image image = new Image(getClass().getResourceAsStream("/res/img/door_temp.png"));
         this.imageView = new ImageView();
         this.imageView.setImage(image);
         this.getChildren().add(this.imageView);
@@ -33,6 +33,10 @@ public class Door extends Object {
     }
     public double getTransportY() {
         return this.Ay;
+    }
+
+    public void TransportHero(Hero myHero) {
+
     }
 
 

@@ -191,20 +191,27 @@ public class Controller implements EventHandler<KeyEvent> {
     //to do: the bulk of this work should be out here,not within the engine, since the android shit will all be in here too, it will make it easier for me to
     //slide my code over.
     public void drawGameObjects() {
-        //List<Object> completeList=this.mainEngine.getCompleteList();
-        /*Object currentObject;
+        List<Object> completeList=this.mainEngine.getCompleteList();
+        Object currentObject;
+        HashMap<Integer, List<Object>> drawMap=new HashMap<Integer, List<Object>>();
+        PriorityQueue<Object> myQueue=new PriorityQueue<Object>(new LayerComparator());
         for (int i=0; i<completeList.size(); i++) {
             currentObject=completeList.get(i);
-            if (
-                    (!(this.gameBoard.getChildren().contains(currentObject)))
-                    && (Math.abs(currentObject.getLayoutX()-this.playerView.getLayoutX()) < frameWidth)
-                    && (Math.abs(currentObject.getLayoutY()-this.playerView.getLayoutY()) < frameHeight)
-               )
-                this.gameBoard.getChildren().add(currentObject);
-        }*/
-        this.updateBlocks();
-        this.updateEnemies();
-        this.updateObjects();
+            myQueue.add(currentObject);
+        }
+
+        while (!myQueue.isEmpty()) {
+            currentObject=myQueue.poll();
+            if (!(this.gameBoard.getChildren().contains(currentObject))) {
+                        if (((this.playerView.getLayoutX() > (currentObject).getLayoutX() - frameWidth))
+                        && (this.playerView.getLayoutX() < (currentObject.getLayoutX() + frameWidth))) {
+                        this.gameBoard.getChildren().add(currentObject);
+                    }
+              }
+        }
+        //this.updateBlocks();
+        //this.updateEnemies();
+        //this.updateObjects();
 
     }
 
@@ -220,7 +227,6 @@ public class Controller implements EventHandler<KeyEvent> {
         }
         if (this.gameView.getLayoutY() > 0) {
             this.gameView.setLayoutY(0);
-            System.out.println("daddy");
         }
 
     }

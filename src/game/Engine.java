@@ -4,12 +4,13 @@ package game;
  * Created by jonathanbrodie on 11/26/14.
  */
 
+import game.AI.EnemyState;
+import game.util.ObjectComparator;
+import game.AI.State;
 import javafx.scene.media.AudioClip;
 
 import java.util.*;
 import java.util.Collections;
-import java.lang.reflect.*;
-import java.lang.reflect.Constructor;
 
 
 public class Engine {
@@ -27,14 +28,29 @@ public class Engine {
     private final int CONSTANT_CLASS_PLASMA=2;
     private final int CONSTANT_CLASS_DEITY=3;
 
-    //Idea, pass level into engine parameter?
     public Engine(LevelTable levelTable) {
+        if (this.mainHero ==null) {
+            this.mainHero =new Hero(0,0,0);
+        }
+
+        Level currentLevel=this.convertGraphToLevel(levelTable);
+        this.blockList=currentLevel.getBlockList();
+        this.enemyList=currentLevel.getEnemyList();
+        this.objectList=currentLevel.getObjectList();
+        this.completeList=currentLevel.getCompleteList();
+        completeList.add(this.mainHero);
+
+        //sort the big list by x position
+        Collections.sort(completeList,new ObjectComparator());
+        this.courseCompleted=false;
+    }
+    public Engine(Level level) {
         if (this.mainHero ==null) {
             this.mainHero =new Hero(0,0,0);
         }
         //currentLevel=new Level1_1();
 
-        Level currentLevel=this.convertGraphToLevel(levelTable);
+        Level currentLevel=level;
         this.blockList=currentLevel.getBlockList();
         this.enemyList=currentLevel.getEnemyList();
         this.objectList=currentLevel.getObjectList();
@@ -135,8 +151,8 @@ public class Engine {
         for (int i = 0; i < this.enemyList.size(); i++) {
             currentEnemy = this.enemyList.get(i);
             if (Math.abs(currentEnemy.getLayoutX() - this.mainHero.getLayoutX()) < 500) {
-                this.GeneralEnemyAI(currentEnemy);
-
+                this.applyGravity(currentEnemy);
+                currentEnemy.updateAI(this.getEnemyState(currentEnemy));
                 currentEnemy.step();
 
                 List<Object> tempEnemyList = this.getCollisionDetection(currentEnemy);
@@ -156,12 +172,9 @@ public class Engine {
 
         }
     }
-
     public void blockListStep() {
 
     }
-
-
     public void objectListStep() {
         Object currentObject;
         //Only step through the objects on the screen.
@@ -326,18 +339,16 @@ public class Engine {
                 this.setCoinCount(this.getCoinCount()+1);
                 this.destroyObject(currentBlock);
             }
+
             else if (currentBlock instanceof HealthPotion) {
                 //check if the caller is an enemy or player
+                HealthPotion myPotion=(HealthPotion) currentBlock;
                 if (oObject instanceof Hero) {
                      Hero myHero=((Hero) oObject);
-                    myHero.setCurrentHP(myHero.getMaxHP());
-                }
-                else if (oObject instanceof Enemy) {
-                    Enemy myEnemy=(Enemy) oObject;
-                    myEnemy.setHP(10);
+                    myPotion.heal(myHero);
+                    this.destroyObject(myPotion);
                 }
 
-                this.destroyObject(currentBlock);
             }
 
 
@@ -389,7 +400,6 @@ public class Engine {
         if (!this.mainHero.inAir) {
             this.mainHero.setVelocityY(this.mainHero.getVelocityY()-30);
             this.playSound("mario_jump.wav");
-
         }
     }
     public void handleUp() {
@@ -406,7 +416,7 @@ public class Engine {
         int heroClass=this.mainHero.getCharacterWeapon();
 
         int instanceCount=0;
-
+        this.mainHero.Attack();
         for (int i=0; i<this.objectList.size(); i++) {
             if (this.objectList.get(i) instanceof HeroWeapon) {
                 instanceCount++;
@@ -452,9 +462,10 @@ public class Engine {
             }
             else this.mainHero.setVelocityX(10);
         }
-
+        System.out.println(this.currentAcceleration);
 
         this.mainHero.setVelocityX(this.mainHero.getVelocityX()+this.currentAcceleration);
+        //apply friction if on the ground?
         this.mainHero.setVelocityX(this.mainHero.getVelocityX() * 0.9);
 
         this.handleCollisions(this.mainHero);
@@ -531,31 +542,12 @@ public class Engine {
     private double getDistanceY(Object object1, Object object2) {
         return Math.sqrt((object1.getLayoutY()-object2.getLayoutY())*(object1.getLayoutY()-object2.getLayoutY()));
     }
-    private void GeneralEnemyAI(Enemy eTarget) {
-        double xPos=eTarget.getLayoutX();
-        double marioPos=this.mainHero.getLayoutX();
 
-        if ((Math.abs(xPos-marioPos) < 300)
-        && (!this.mainHero.collision(eTarget))
-        && (Math.abs(xPos-marioPos) > 64)) {
-            int nDirection=1;
-            if ((marioPos-xPos < 0)) {
-                nDirection=-1;
-            }
+    public EnemyState getEnemyState(Enemy enemy) {
+        return new EnemyState(this.mainHero,enemy,this.getObjectList(),this.getEnemyList(),this.getBlockList());
+    }
+    public State getState() {
+        return new State(this.mainHero,this.getObjectList(),this.getEnemyList(),this.getBlockList());
+    }
 
-            eTarget.setVelocityX(2*nDirection);
-        }
-        if (Math.abs(xPos-marioPos) < 300) {
-            int randAttack=(int)(Math.random()*100);
-            if (randAttack > 96) {
-                this.EnemyAttack(eTarget);
-            }
-        }
-    }
-    private void EnemyAttack(Enemy myEnemy) {
-        Enemy EnemyWeapon=new EnemyWeapon(myEnemy.getLayoutX(),myEnemy.getLayoutY()+32,myEnemy.bXOrientation);
-        EnemyWeapon.setPower(myEnemy.getAttack());
-        EnemyWeapon.setHP(1);
-        this.addObjectToList(EnemyWeapon);
-    }
 }

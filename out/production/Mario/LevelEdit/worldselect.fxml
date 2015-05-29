@@ -8,7 +8,7 @@
 <?import javafx.scene.control.ScrollPane?>
 
 <?import javafx.scene.control.TextField?>
-<GridPane fx:controller="LevelEdit.WorldController"
+<GridPane fx:controller="game.WorldController"
           xmlns:fx="http://javafx.com/fxml"
           alignment="center"
           hgap="10"

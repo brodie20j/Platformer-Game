@@ -1,5 +1,6 @@
 package game;
 
+import game.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
@@ -8,7 +9,7 @@ import javafx.scene.shape.Rectangle;
 /**
  * Created by jonathanbrodie on 11/26/14.
  */
-public class Block extends Object {
+public class Block extends game.Object {
 
 
     public Block() {

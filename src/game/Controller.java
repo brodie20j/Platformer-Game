@@ -1,5 +1,6 @@
 package game;
 
+import game.util.LayerComparator;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -132,8 +133,6 @@ public class Controller implements EventHandler<KeyEvent> {
                 this.mainEngine.setCurrentAcceleration(4);
             }
 
-            if ((this.playerView.getVelocityX()/this.mainEngine.getCurrentAcceleration()) != Math.abs(this.playerView.getVelocityX()/this.mainEngine.getCurrentAcceleration())) {
-            }
             if (code == KeyCode.Z) {
                 this.mainEngine.handleAButton();
 
@@ -162,7 +161,7 @@ public class Controller implements EventHandler<KeyEvent> {
     public void updateAnimation() {
         this.gameBoard.getChildren().clear();
         this.mainEngine.step();
-        this.updateMario();
+        this.updateHero();
         this.drawGameObjects();
         this.updateHealthBar();
         this.CoinLabel.setText("Money: "+this.mainEngine.getCoinCount());
@@ -239,7 +238,7 @@ public class Controller implements EventHandler<KeyEvent> {
         this.setUpAnimationTimer();
     }
 
-    public void updateMario() {
+    public void updateHero() {
         if (this.playerView != this.mainEngine.getMario()) {
             this.playerView =this.mainEngine.getMario();
 
@@ -256,6 +255,7 @@ public class Controller implements EventHandler<KeyEvent> {
             this.playerView.setVelocityX(0);
         }
         if (((this.playerView.getLayoutX()+500) > this.boardWidth)  && (this.playerView.getVelocityX()>0)) {
+            this.mainEngine.setCurrentAcceleration(0);
             this.playerView.setVelocityX(0);
         }
     }

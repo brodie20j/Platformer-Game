@@ -1,4 +1,4 @@
-import LevelEdit.WorldController;
+import game.WorldController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;

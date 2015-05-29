@@ -1,7 +1,12 @@
 package game;
 
+import game.AI.Action;
+import game.AI.EnemyIntelligence;
+import game.AI.EnemyState;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+
+import java.util.PriorityQueue;
 
 /**
  * Created by jonathanbrodie on 11/26/14.
@@ -11,11 +16,16 @@ public class Enemy extends Object {
     private int hp;
     private int maxhp;
     private boolean bDead;
-    private ImageView imageView;
     private int walkAnimCounter=0;
     private boolean bAnim=false;
-    public boolean bXOrientation=false;
-    private String myString="";
+    public boolean bXOrientation=true;
+    private EnemyIntelligence myAI;
+    private PriorityQueue<Action> ActionQueue=new PriorityQueue<Action>();
+    private boolean bAttacking=false;
+    private int runSpeed=4;
+
+    private final Action GLOBAL=new Action(-1);
+
 
     public Enemy(double startX, double startY) {
         this.setLayoutX(startX);
@@ -57,68 +67,124 @@ public class Enemy extends Object {
     }
     @Override
     public void step() {
+        if (myAI != null)  {
+            this.myAI.step();
+        }
+        if (this.ActionQueue.isEmpty()) return;
+        Action currentAction=this.ActionQueue.poll();
+        //currentAction.doAction(this);
+        this.handleAction(currentAction);
 
         this.setLayoutX(this.getLayoutX() + this.getVelocityX());
         this.setLayoutY(this.getLayoutY() + this.getVelocityY());
         if (this.hp <= 0) {
             this.bDead=true;
         }
-        //updateSprite();
+        if (this.getVelocityX()<0) {
+            this.bXOrientation=false;
+        }
+        else if (this.getVelocityX()>0) {
+            this.bXOrientation=true;
+        }
+
+
     }
     //Updates the sprite based on gravity effects, ect.
     //This means that this method is only called when the object steps
     public void updateSprite() {
        // Class<?> enclosingClass = this.getClass().getEnclosingClass();
         String className=this.getClass().getSimpleName().toLowerCase();
-        this.imageView = new ImageView();
-        Image image;
-        if (this.getVelocityX() > 0) {
-            if (this.walkAnimCounter >= 4) {
-                if (bAnim) myString="/res/img/"+className+"_idler.png";
-                else myString="/res/img/"+className+"_walkingr.png";
-                bAnim=!bAnim;
-                walkAnimCounter=0;
-            }
-            walkAnimCounter+=1;
-            image = new Image(getClass().getResourceAsStream(myString));
-            this.bXOrientation=false;
-        } else if (this.getVelocityX() < 0) {
-            if (this.walkAnimCounter >= 4) {
-                if (bAnim) myString="/res/img/"+className+"_idle.png";
-                else myString="/res/img/"+className+"_walking.png";
-                bAnim=!bAnim;
-                walkAnimCounter=0;
+        String myString="";
 
-            }
-            walkAnimCounter+=1;
-            this.bXOrientation=true;
-            image = new Image(getClass().getResourceAsStream(myString));
-        } else {
-            if (this.bXOrientation) image = new Image(getClass().getResourceAsStream("/res/img/"+className+"_idle.png"));
-            else image = new Image(getClass().getResourceAsStream("/res/img/"+className+"_idle.png"));
+        System.out.println(this.isAttacking());
+        System.out.println("...");
+
+        if (this.isAttacking()) {
+            System.out.println("Attack");
+            //attacking animations go here
+            myString=className+"_idle";
         }
-        //image = new Image(getClass().getResourceAsStream("/res/img/mario_idle.png"));
+        else if (this.getVelocityX() != 0) {
+            if (this.walkAnimCounter >= 4) {
+                if (bAnim) myString=className+"_idle";
+                else myString=className+"_walking";
+                bAnim=!bAnim;
+                walkAnimCounter=0;
+            }
+            else {
+                myString=className+"_walking";
+            }
+            System.out.println("dad is here");
+            walkAnimCounter+=1;
+        }
+        else {
+            System.out.println("IN ELSE CLAUSE");
+            myString=className+"_idle";
+        }
+        System.out.println("....");
 
-        this.imageView.setImage(image);
-        this.getChildren().clear();
-        this.getChildren().add(imageView);
-        this.walkAnimCounter+=1;
+        if (this.bXOrientation) myString+="r";
+
+        myString+=".png";
+        System.out.println(myString);
+        this.setSprite(myString);
     }
 
-    //loads sprite based on path '/res/img/yourfilepathhere'
-    public void setSprite(String sFileName) {
-        this.getChildren().clear();
-        Image image = new Image(getClass().getResourceAsStream(sFileName));
-        imageView = new ImageView();
-        imageView.setImage(image);
-        this.getChildren().add(imageView);
+    public void turnAround() {
+        this.bXOrientation=!this.bXOrientation;
+        this.setVelocityX(this.getVelocityX()*-1);
     }
-    //adds sprite to node's children
-    //To avoid ambiguity: this local imageView is not the Object's set "Image View"
-    public void addSprite(String sFileName) {
-        Image image = new Image(getClass().getResourceAsStream(sFileName));
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        this.getChildren().add(imageView);
+    public void updateAI(EnemyState currentState) {
+        if (this.myAI==null) {
+            this.myAI=new EnemyIntelligence(currentState);
+        }
+        else {
+            this.myAI.updateState(currentState);
+        }
+    }
+    public void Attack() {
+        if (this.bAttacking) return;
+        this.bAttacking=true;
+    }
+    public boolean isAttacking() {
+        return this.bAttacking;
+    }
+    public int getRunSpeed() {
+        return this.runSpeed;
+    }
+
+    public void addAction(Action newAction) {
+        this.ActionQueue.add(newAction);
+    }
+    public void clearActionQueue() {
+        this.ActionQueue=new PriorityQueue<Action>();
+    }
+
+    /*
+    handleAction(Action myAction)
+    Override in subclasses to override default enemy behavior
+    It would be wise to place this in the default of your new switch statement, as
+    it will prevent exceptions and enemies unable to handle an action
+     */
+    public void handleAction(Action myAction) {
+        switch (myAction.getAction()) {
+            case 0:
+                //Do nothing
+                break;
+            case 1:
+
+                if (!this.isAttacking())
+                this.Attack();
+                break;
+            case 2:
+               this.setVelocityX(-1 * this.getRunSpeed());
+                break;
+            case 3:
+                this.setVelocityX(this.getRunSpeed());
+                break;
+            case 4:
+               this.setVelocityY(-20);
+                break;
+        }
     }
 }

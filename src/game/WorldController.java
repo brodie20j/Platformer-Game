@@ -1,13 +1,12 @@
-package LevelEdit;
+package game;
 
 /**
  * Created by jonathanbrodie on 1/4/15.
  */
-import game.*;
+import LevelEdit.PreviewEngine;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableArray;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -25,13 +24,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import game.Object;
 
-import java.awt.*;
 import java.util.Hashtable;
 import java.util.List;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.io.*;
 import javafx.collections.FXCollections;
 import java.util.Arrays;
@@ -47,14 +43,14 @@ public class WorldController {
     @FXML private ChoiceBox typeInput;
     @FXML private ChoiceBox levelList;
     @FXML private Button deleteButton;
-    private Pane contentPane=new Pane();
     @FXML private Label xlevelLabel;
     @FXML private Label ylevelLabel;
-
     @FXML private TextField levelName;
-    private LevelTable selectedLevel=null;
     @FXML private TextField yInput;
     @FXML private Button exitButton;
+
+    private Pane contentPane=new Pane();
+    private LevelTable selectedLevel=null;
 
     private final List<String> typeList=Arrays.asList("Object","Enemy","Block");
     private final List<String> blockList=Arrays.asList("Block","Breakable Block");
@@ -224,6 +220,7 @@ public class WorldController {
                 this.updateLevelList();
 
             } else {
+                System.out.println("please name the file first!");
                 return;
             }
         }

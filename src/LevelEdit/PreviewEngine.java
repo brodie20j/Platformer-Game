@@ -2,6 +2,7 @@ package LevelEdit;
 
 import game.*;
 import game.Object;
+import game.Block;
 
 import java.util.List;
 

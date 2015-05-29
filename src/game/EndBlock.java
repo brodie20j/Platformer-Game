@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 /**
  * Created by jonathanbrodie on 1/3/15.
  */
-public class EndBlock extends Block{
+public class EndBlock extends Block {
     public boolean bUsed;
     private ImageView imageView;
     private int AnimationCounter=0;

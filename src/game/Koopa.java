@@ -7,7 +7,6 @@ import javafx.scene.image.ImageView;
  * Created by jonathanbrodie on 11/29/14.
  */
 public class Koopa extends Enemy {
-    private ImageView imageView;
     private int walkAnimCounter=0;
     private boolean bAnim=false;
     private String myString="/res/img/mario_idler.png";
@@ -15,29 +14,24 @@ public class Koopa extends Enemy {
     public Koopa(double startX, double startY) {
         this.setLayoutX(0);
         this.setLayoutY(0);
-        Image image = new Image(getClass().getResourceAsStream("/res/img/koopa_idle.png"));
-        imageView = new ImageView();
-        imageView.setImage(image);
+        this.setSprite("koopa_idle.png");
+
         this.setLayoutX(startX);
         this.setLayoutY(startY);
-        this.getChildren().add(imageView);
         this.setHP(2);
         this.setPower(1);
     }
     public Koopa() {
         this.setLayoutX(0);
         this.setLayoutY(0);
-        Image image = new Image(getClass().getResourceAsStream("/res/img/koopa_idle.png"));
-        imageView = new ImageView();
-        imageView.setImage(image);
-        this.getChildren().add(imageView);
+        this.setSprite("koopa_idle.png");
         this.setHP(2);
         this.setPower(1);
     }
 
     public void step() {
         super.step();
-        this.updateSprite();
+        super.updateSprite();
     }
 
 

@@ -24,6 +24,11 @@ public class Hero extends Object {
     private String myString="/res/img/mario_idler.png";
     private int weaponType=-1;
     private boolean facingUp=false;
+    private boolean bAttacking=false;
+    private int bAttackCount=0;
+
+
+
     public Hero(double startX, double startY, int myCLASS) {
         Image image = new Image(getClass().getResourceAsStream("/res/img/mariotest2.png"));
 
@@ -75,6 +80,8 @@ public class Hero extends Object {
         return this.bInvincible;
     }
     @Override
+    //Step method for this object.  Adjusts velocity if need be.
+
     public void step() {
 
         this.setLayoutX(this.getLayoutX() + this.getVelocityX());
@@ -96,7 +103,13 @@ public class Hero extends Object {
             this.setOpacity(1);
 
         }
-
+        if (this.bAttacking) {
+            this.bAttackCount+=1;
+            if (this.bAttackCount>40) {
+                this.bAttackCount=0;
+                this.bAttacking=false;
+            }
+        }
         if (this.inAir) {
             if (this.getVelocityY() < 0) {
                 this.setVelocityY(this.getVelocityY()*0.972);
@@ -104,58 +117,68 @@ public class Hero extends Object {
             this.setVelocityY(this.getVelocityY()+3);
 
         }
-        //else if (this.getVelocityY() >= 0) this.setVelocityY(0);
 
+        if (this.getVelocityX()>= 0) {
+            this.bXOrientation=true;
+        }
+        else {
+            this.bXOrientation=false;
+        }
 
         this.updateSprite();
 
     }
+    public void moveRight() {
+        this.setVelocityX(4);
+    }
+    public void moveLeft() {
+        this.setVelocityX(-4);
 
+    }
+    //updates the sprite
     public void updateSprite() {
-        this.imageView = new ImageView();
-        Image image;
-        if (this.inAir) {
-            //falling animation
-            if (!this.bXOrientation && this.getVelocityX() >= 0) {
-                image = new Image(getClass().getResourceAsStream("/res/img/mario_jumpingr.png"));
-            }
-            else {
-                image = new Image(getClass().getResourceAsStream("/res/img/mario_jumping.png"));
-            }
+
+        String myString="";
+        if (this.bAttacking) {
+            myString="mario_attack";
+        }
+        else if (this.inAir) {
+            myString="mario_jumping";
 
         }
         else {
             if (this.getVelocityX() > 0) {
                 if (this.walkAnimCounter >= 4) {
-                    if (bAnim) myString = "/res/img/mario_idler.png";
-                    else myString = "/res/img/mario_walkingr.png";
+                    if (bAnim) myString = "mario_idle";
+                    else myString = "mario_walking";
                     bAnim = !bAnim;
                     walkAnimCounter = 0;
                 }
-            walkAnimCounter += 1;
-            image = new Image(getClass().getResourceAsStream(myString));
-            this.bXOrientation = false;
-            }
-            else if (this.getVelocityX() < 0) {
-                if (this.walkAnimCounter >= 4) {
-                    if (bAnim) myString="/res/img/mario_idle.png";
-                    else myString="/res/img/mario_walking.png";
-                    bAnim=!bAnim;
-                    walkAnimCounter=0;
+                else {
+                    myString="mario_walking";
                 }
-                walkAnimCounter+=1;
-                this.bXOrientation=true;
-                image = new Image(getClass().getResourceAsStream(myString));
-            } else {
-                if (!this.bXOrientation) image = new Image(getClass().getResourceAsStream("/res/img/mario_idler.png"));
-                else image = new Image(getClass().getResourceAsStream("/res/img/mario_idle.png"));
-            }
-            //image = new Image(getClass().getResourceAsStream("/res/img/mario_idle.png"));
-        }
+                walkAnimCounter += 1;
 
-        this.imageView.setImage(image);
-        this.getChildren().clear();
-        this.getChildren().add(imageView);
-        this.walkAnimCounter+=1;
+
+            }
+            else {
+                myString="mario_idle";
+            }
+        }
+        if (this.bXOrientation) {
+            myString+="r";
+        }
+        myString+=".png";
+        this.setSprite(myString);
+    }
+    public void Attack() {
+        if (this.bAttacking) return;
+        this.bAttacking=true;
+    }
+    public void setFacingRight() {
+        this.bXOrientation=true;
+    }
+    public void setFacingLeft() {
+        this.bXOrientation=true;
     }
 }

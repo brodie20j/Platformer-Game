@@ -1,10 +1,13 @@
-package game;
+package game.util;
 
 /**
  * Created by jonathanbrodie on 3/1/15.
  */
+import game.*;
+import game.Object;
+
 import java.util.Comparator;
-public class ObjectComparator implements Comparator<Object> {
+public class ObjectComparator implements Comparator<game.Object> {
     int xBase;
 
     public ObjectComparator() {

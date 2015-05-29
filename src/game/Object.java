@@ -13,7 +13,7 @@ public class Object extends Group {
     private double velocityX;
     @FXML private double velocityY;
     private int layer=0;
-
+    private ImageView imageView;
     private boolean solid=false;
     public boolean inAir=true;
     public Object(double startX, double startY) {
@@ -37,6 +37,7 @@ public class Object extends Group {
     public double getHeight() {
         return this.getBoundsInParent().getHeight();
     }
+
     public void step() {
 
     }
@@ -101,5 +102,22 @@ public class Object extends Group {
         this.solid=bool;
     }
 
+    //loads sprite based on path '/res/img/yourfilepathhere'
+    public void setSprite(String sFileName) {
+        this.getChildren().clear();
+        Image image = new Image(getClass().getResourceAsStream("/res/img/"+sFileName));
+        this.imageView = new ImageView();
+        this.imageView.setImage(image);
+        this.getChildren().add(imageView);
+    }
+
+    //adds sprite to node's children
+    //To avoid ambiguity: this local imageView is not the Object's set "Image View"
+    public void addSprite(String sFileName) {
+        Image image = new Image(getClass().getResourceAsStream(sFileName));
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        this.getChildren().add(imageView);
+    }
 
 }

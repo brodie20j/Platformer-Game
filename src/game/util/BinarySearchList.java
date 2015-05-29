@@ -1,11 +1,14 @@
-package game;
+package game.util;
 
 /**
  * Created by jonathanbrodie on 3/2/15.
  */
+import game.*;
+import game.Object;
+
 import java.util.List;
 public class BinarySearchList {
-    private List<Object> list;
+    private List<game.Object> list;
     public BinarySearchList() {
     }
     public int getIndex(List<Object> sortedList,Object oObject) {

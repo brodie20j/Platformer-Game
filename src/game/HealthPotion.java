@@ -8,6 +8,7 @@ import javafx.scene.image.ImageView;
  */
 public class HealthPotion extends Object {
     private ImageView imageView;
+    public final int nAmount=5;
     public HealthPotion(double startX, double startY) {
         Image image= new Image(getClass().getResourceAsStream("/res/img/hp_potion.png"));
         imageView = new ImageView();
@@ -16,6 +17,8 @@ public class HealthPotion extends Object {
         this.setLayoutY(startY);
         this.getChildren().add(imageView);
     }
-
+    public void heal(Hero myHero) {
+        myHero.setCurrentHP(myHero.getCurrentHP()+nAmount);
+    }
 
 }

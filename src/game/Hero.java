@@ -175,6 +175,9 @@ public class Hero extends Object {
         if (this.bAttacking) return;
         this.bAttacking=true;
     }
+    public boolean isAttacking() {
+        return this.bAttacking;
+    }
     public void setFacingRight() {
         this.bXOrientation=true;
     }

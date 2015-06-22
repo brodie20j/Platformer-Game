@@ -190,9 +190,8 @@ public class Controller implements EventHandler<KeyEvent> {
     //to do: the bulk of this work should be out here,not within the engine, since the android shit will all be in here too, it will make it easier for me to
     //slide my code over.
     public void drawGameObjects() {
-        List<Object> completeList=this.mainEngine.getCompleteList();
+        List<Object> completeList=this.mainEngine.getDrawList();
         Object currentObject;
-        HashMap<Integer, List<Object>> drawMap=new HashMap<Integer, List<Object>>();
         PriorityQueue<Object> myQueue=new PriorityQueue<Object>(new LayerComparator());
         for (int i=0; i<completeList.size(); i++) {
             currentObject=completeList.get(i);
@@ -208,9 +207,6 @@ public class Controller implements EventHandler<KeyEvent> {
                     }
               }
         }
-        //this.updateBlocks();
-        //this.updateEnemies();
-        //this.updateObjects();
 
     }
 

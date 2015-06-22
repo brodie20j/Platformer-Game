@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
+import game.*;
 
 /**
  * Created by jonathanbrodie on 4/10/15.
@@ -15,6 +16,8 @@ public class LevelTable implements Serializable {
     private Hashtable<String, Class> idMap=new Hashtable<String, Class>();
     //Type is the parent class of the object we are storing (EG: block, object, enemy);
     private Hashtable<String, Class> typeMap=new Hashtable<String, Class>();
+
+    private Hashtable<String, Object> objectMap=new Hashtable<String, Object>();
     private List<String> keyList=new ArrayList<String>();
     private String backgroundString="";
     private String levelName="";
@@ -52,6 +55,14 @@ public class LevelTable implements Serializable {
         this.yMap.put(myKey,yPos);
         this.idMap.put(myKey,id);
         this.typeMap.put(myKey,type);
+
+    }
+    public void storeObjectAs(String myKey, Object myObject) {
+        if (this.keyList.contains(myKey)) {
+            this.keyList.remove(myKey);
+        }
+        this.keyList.add(myKey);
+        this.objectMap.put(myKey,myObject);
     }
 
     public void delete(String myKey) {
@@ -60,6 +71,7 @@ public class LevelTable implements Serializable {
         this.idMap.remove(myKey);
         this.typeMap.remove(myKey);
         this.keyList.remove(myKey);
+        this.objectMap.remove(myKey);
     }
     public double getX(String myKey) {
         return this.xMap.get(myKey);
@@ -88,5 +100,8 @@ public class LevelTable implements Serializable {
     }
     public void setLevelName(String myString) {
         this.levelName=myString;
+    }
+    public Object getObject(String myKey) {
+        return this.objectMap.get(myKey);
     }
 }

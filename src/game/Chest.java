@@ -19,6 +19,7 @@ public class Chest extends Object {
         this.setLayoutY(startY);
     }
 
+
     public void giveTreasure() {
         if (!bOpen) {
             //Update image
@@ -30,4 +31,5 @@ public class Chest extends Object {
     public void step() {
         super.step();
     }
+
 }

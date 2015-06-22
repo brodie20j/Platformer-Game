@@ -1,9 +1,10 @@
-package game;
+package LevelEdit;
 
 /**
  * Created by jonathanbrodie on 1/4/15.
  */
-import LevelEdit.PreviewEngine;
+import game.*;
+import game.Object;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -21,6 +22,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ScrollPane;
 
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
+
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -30,24 +33,25 @@ import java.util.List;
 import java.io.IOException;
 import java.io.*;
 import javafx.collections.FXCollections;
+import javafx.stage.FileChooser;
+
 import java.util.Arrays;
 
 public class WorldController {
-    @FXML private Button instructionButton;
-    @FXML private Button startButton;
     @FXML private Label mainMenuLabel;
     @FXML private TextField xInput;
-    @FXML private ChoiceBox fileMenu;
     @FXML private ScrollPane previewPane;
     @FXML private ChoiceBox idInput;
     @FXML private ChoiceBox typeInput;
-    @FXML private ChoiceBox levelList;
+    @FXML private ListView levelList;
     @FXML private Button deleteButton;
     @FXML private Label xlevelLabel;
     @FXML private Label ylevelLabel;
     @FXML private TextField levelName;
     @FXML private TextField yInput;
     @FXML private Button exitButton;
+    @FXML private GridPane mainBoard;
+
 
     private Pane contentPane=new Pane();
     private LevelTable selectedLevel=null;
@@ -69,6 +73,80 @@ public class WorldController {
     public void initialize() {
         //this.setPrevStage();
 
+        //Menu
+
+        MenuBar menuBar = new MenuBar();
+
+        // --- Menu File
+        Menu menuFile = new Menu("File");
+
+        MenuItem save = new MenuItem("Save");
+        save.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                saveLevel(selectedLevel);
+            }
+        });
+        MenuItem load = new MenuItem("Load");
+
+        load.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                loadLevel();
+            }
+        });
+
+        menuFile.getItems().addAll(save,load);
+        // --- Menu Edit
+        Menu menuEdit = new Menu("Edit");
+        MenuItem add = new MenuItem("Add Object");
+
+        add.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                try {
+                    addObject();
+                } catch (IOException e) {
+                    System.out.println("Could not add Object!");
+                }
+            }
+        });
+
+        MenuItem delete = new MenuItem("Delete Object");
+
+        delete.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                deleteObject();
+            }
+        });
+        menuEdit.getItems().addAll(add,delete);
+
+        // --- Menu View
+        Menu menuView = new Menu("Game");
+
+        MenuItem play = new MenuItem("Play");
+        play.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                try {
+                    goToGame();
+                } catch (IOException e) {
+                    System.out.println("Could not transition to the game!");
+                }
+            }
+        });
+        MenuItem preview = new MenuItem("Preview");
+        preview.setOnAction(new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent t) {
+                previewLevel();
+            }
+        });
+
+        menuView.getItems().addAll(play,preview);
+
+        //add everything
+        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
+
+        //add the menu to the scene
+        this.mainBoard.getChildren().addAll(menuBar);
+
+        //hardcode all items from the game here
         this.idMap.put("Block", Block.class);
         this.idMap.put("Koopa", Koopa.class);
         this.idMap.put("Coin", Coin.class);
@@ -77,20 +155,11 @@ public class WorldController {
         this.idMap.put("Chest", Chest.class);
         this.idMap.put("Door", Door.class);
 
-        this.previewPane.setPrefSize(300,300);
+        this.previewPane.setPrefSize(350,300);
 
         mainMenuLabel.setTextFill(Color.BLACK);
         mainMenuLabel.setAlignment(Pos.CENTER);
-        this.typeInput.setItems(FXCollections.observableArrayList(this.typeList));
-        this.fileMenu.setItems(FXCollections.observableArrayList("File",new Separator(),"Start","Load Level","Save Level","Preview"));
 
-        this.typeInput.getSelectionModel().selectedItemProperty().addListener(new
-                                                                                      ChangeListener() {
-                                                                                          @Override
-                                                                                          public void changed(ObservableValue observable, java.lang.Object oldValue, java.lang.Object newValue) {
-                                                                                                updateIDList();
-                                                                                          }
-                                                                                      });
         this.levelList.getSelectionModel().selectedItemProperty().addListener(new
                                                                                       ChangeListener() {
                                                                                           @Override
@@ -98,42 +167,13 @@ public class WorldController {
                                                                                               updateLevelLabels();
                                                                                           }
                                                                                       });
-        this.fileMenu.getSelectionModel().selectedItemProperty().addListener(new
-                                                                                      ChangeListener() {
-                                                                                          @Override
-                                                                                          public void changed(ObservableValue observable, java.lang.Object oldValue, java.lang.Object newValue) {
-                                                                                              fileMenu();
-                                                                                          }
-                                                                                      });
+
 
     }
     public void updatePane() {
 
     }
-    public void fileMenu() {
 
-        if (this.fileMenu.getValue().equals("Start")) {
-                try {
-                    System.out.println("yay");
-                    this.goToGame();
-                } catch (IOException e) {
-                    System.out.println("oh fuck");
-                }
-
-        }
-        else if (this.fileMenu.getValue().equals("Save Level")) {
-            this.saveLevel(this.selectedLevel,this.levelName.getText());
-
-        }
-        else if (this.fileMenu.getValue().equals("Load Level")) {
-            this.loadLevel();
-        }
-        else if (this.fileMenu.getValue().equals("Preview")) {
-            this.previewLevel();
-          }
-        System.out.println("daddy");
-        this.fileMenu.setValue("File");
-    }
     public void setStage(Stage stage) {
         this.prevStage = stage;
     }
@@ -158,17 +198,7 @@ public class WorldController {
         stage.show();
 
     }
-    public void updateIDList() {
-        if (this.typeInput.getValue().equals("Object")) {
-            this.idInput.setItems(FXCollections.observableArrayList(this.objectList));
-        }
-        else if (this.typeInput.getValue().equals("Enemy")) {
-            this.idInput.setItems(FXCollections.observableArrayList(this.enemyList));
-        }
-        else if (this.typeInput.getValue().equals("Block")) {
-            this.idInput.setItems(FXCollections.observableArrayList(this.blockList));
-        }
-    }
+
 
 
     public void goToGame() throws IOException {
@@ -189,10 +219,6 @@ public class WorldController {
                 System.exit(0);
             }
         });
-        System.out.println("k");
-
-        //this.selectedLevel=this.getSelectedLevel("tester2.ser");
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/game/sample.fxml"));
 
         final Controller controller = new Controller(this.selectedLevel);
@@ -214,43 +240,49 @@ public class WorldController {
         System.exit(0);
     }
     public void loadLevel() {
-        if (this.selectedLevel == null) {
-            if (!this.levelName.getText().equals("")) {
-                this.selectedLevel = this.getLevel(this.levelName.getText());
-                this.updateLevelList();
 
-            } else {
-                System.out.println("please name the file first!");
-                return;
-            }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open Resource File");
+        File selectedFile = fileChooser.showOpenDialog(this.prevStage);
+        if (selectedFile != null) {
+            this.selectedLevel=this.getLevel(selectedFile);
+            this.updateLevelList();
         }
+        else {
+            System.out.println("FILE WAS NULL!!!!");
+        }
+
     }
 
-    public void deleteObject(ActionEvent actionEvent) throws IOException {
-        if (this.levelList.getValue().equals("")) {
+    public void deleteObject() {
+        if (this.levelList.getSelectionModel().getSelectedItem().equals("")) {
+            System.out.println("No Object selected");
             return;
         }
-        String myKey=(String) this.levelList.getValue();
+        String myKey=(String) this.levelList.getSelectionModel().getSelectedItem();
         this.selectedLevel.delete(myKey);
         this.updateLevelList();
-
-
     }
 
-    private void saveLevel(LevelTable table, String levelName) {
+    private void saveLevel(LevelTable table) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save File");
+        File selectedFile = fileChooser.showSaveDialog(this.prevStage);
+
         try
         {
-            FileOutputStream fileOut =
-                    new FileOutputStream(levelName);
+            FileOutputStream fileOut = new FileOutputStream(selectedFile);
             ObjectOutputStream out = new ObjectOutputStream(fileOut);
             if (table==null) {
+                System.out.println("Table is null. Creating new table....");
                 table=new LevelTable();
                 this.selectedLevel=table;
+                System.out.println("Table created");
             }
+            table.setLevelName(this.levelName.getText());
             out.writeObject(table);
             out.close();
             fileOut.close();
-            System.out.printf("");
             this.updateLevelList();
         }catch(IOException i)
         {
@@ -262,11 +294,10 @@ public class WorldController {
         if (this.selectedLevel==null) {
             return;
         }
-            this.levelList.setItems(FXCollections.observableArrayList(this.selectedLevel.getKeyList()));
+        this.levelList.setItems(FXCollections.observableArrayList(this.selectedLevel.getKeyList()));
     }
     private LevelTable getLevel(String fileName) {
         LevelTable table;
-
             try {
                 FileInputStream fileIn = new FileInputStream(fileName);
                 ObjectInputStream in = new ObjectInputStream(fileIn);
@@ -282,27 +313,47 @@ public class WorldController {
             }
         return null;
     }
+    private LevelTable getLevel(File fileName) {
+        LevelTable table;
+
+        try {
+            FileInputStream fileIn = new FileInputStream(fileName);
+            ObjectInputStream in = new ObjectInputStream(fileIn);
+            table = (LevelTable) in.readObject();
+            in.close();
+            fileIn.close();
+            return table;
+        } catch (IOException i) {
+            i.printStackTrace();
+        } catch (ClassNotFoundException c) {
+            System.out.println("Employee class not found");
+            c.printStackTrace();
+        }
+        return null;
+    }
 
     public void updateLevelLabels() {
-        this.xlevelLabel.setText(Double.toString(this.selectedLevel.getX((String) this.levelList.getValue())));
-        this.ylevelLabel.setText(Double.toString(this.selectedLevel.getY((String) this.levelList.getValue())));
+
+        this.xlevelLabel.setText(Double.toString(this.selectedLevel.getX((String) this.levelList.getSelectionModel().getSelectedItem())));
+        this.ylevelLabel.setText(Double.toString(this.selectedLevel.getY((String) this.levelList.getSelectionModel().getSelectedItem())));
     }
-    public void addButton(ActionEvent actionEvent) throws IOException {
-        Class id=idMap.get(this.idInput.getValue());
+
+    public void add(String idInputValue, String typeInputValue, String sx, String sy) {
+        Class id=idMap.get(idInputValue);
         Class type;
 
 
-       if (this.typeInput.getValue().equals("Enemy")) {
+        if (typeInputValue.equals("Enemy")) {
             type=Enemy.class;
         }
-        else if (this.typeInput.getValue().equals("Block")) {
+        else if (typeInputValue.equals("Block")) {
             type=Block.class;
         }
         else {
-            type=Object.class;
+            type= Object.class;
         }
-        double x = Double.parseDouble(this.xInput.getText());
-        double y = Double.parseDouble(this.yInput.getText());
+        double x = Double.parseDouble(sx);
+        double y = Double.parseDouble(sy);
         System.out.println(x);
         System.out.println(y);
         System.out.println(type);
@@ -313,8 +364,8 @@ public class WorldController {
             return;
         }
         this.selectedLevel.store(myNode);
+        this.updateLevelList();
     }
-
     public void previewLevel() {
             this.previewEngine=new PreviewEngine(this.selectedLevel);
 
@@ -335,5 +386,20 @@ public class WorldController {
             this.contentPane.getChildren().add(blockList.get(i));
         }
         this.previewPane.setContent(this.contentPane);
+    }
+    public void addObject() throws IOException {
+        Stage newStage=new Stage();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/LevelEdit/addobject.fxml"));
+        System.out.println("Here?");
+
+        Parent root = (Parent)loader.load();
+
+        AddController controller = loader.getController();
+        controller.setStage(newStage);
+        controller.setParentController(this);
+        newStage.setTitle("Add Object");
+        newStage.setScene(new Scene(root, 250, 250));
+        newStage.show();
     }
 }

@@ -50,7 +50,7 @@ public class Enemy extends Object {
             bDead=true;
         }
     }
-    private void setMaxHP(int newHP) {
+    public void setMaxHP(int newHP) {
         this.maxhp=newHP;
     }
     public void setPower(int newPower) {
@@ -70,11 +70,11 @@ public class Enemy extends Object {
         if (myAI != null)  {
             this.myAI.step();
         }
-        if (this.ActionQueue.isEmpty()) return;
-        Action currentAction=this.ActionQueue.poll();
-        //currentAction.doAction(this);
-        this.handleAction(currentAction);
-
+        if (!this.ActionQueue.isEmpty()) {
+            Action currentAction = this.ActionQueue.poll();
+            //currentAction.doAction(this);
+            this.handleAction(currentAction);
+        }
         this.setLayoutX(this.getLayoutX() + this.getVelocityX());
         this.setLayoutY(this.getLayoutY() + this.getVelocityY());
         if (this.hp <= 0) {
@@ -100,9 +100,12 @@ public class Enemy extends Object {
         System.out.println("...");
 
         if (this.isAttacking()) {
-            System.out.println("Attack");
+            System.out.println("Attacking");
             //attacking animations go here
             myString=className+"_idle";
+        }
+        else if (this.getVelocityY() != 0) {
+
         }
         else if (this.getVelocityX() != 0) {
             if (this.walkAnimCounter >= 4) {
@@ -114,7 +117,6 @@ public class Enemy extends Object {
             else {
                 myString=className+"_walking";
             }
-            System.out.println("dad is here");
             walkAnimCounter+=1;
         }
         else {
@@ -168,22 +170,26 @@ public class Enemy extends Object {
      */
     public void handleAction(Action myAction) {
         switch (myAction.getAction()) {
-            case 0:
+            case Action.ACTION_NO_ACTION:
                 //Do nothing
                 break;
-            case 1:
+            case Action.ACTION_ATTACK:
 
                 if (!this.isAttacking())
                 this.Attack();
                 break;
-            case 2:
+            case Action.ACTION_MOVE_LEFT:
                this.setVelocityX(-1 * this.getRunSpeed());
                 break;
-            case 3:
+            case Action.ACTION_MOVE_RIGHT:
                 this.setVelocityX(this.getRunSpeed());
                 break;
-            case 4:
+            case Action.ACTION_JUMP:
                this.setVelocityY(-20);
+                break;
+            default:
+                System.out.println(myAction.getAction());
+                System.out.println("This action has not been defined in the new Class");
                 break;
         }
     }

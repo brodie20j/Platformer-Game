@@ -5,10 +5,12 @@ import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
+import java.io.Serializable;
+
 /**
  * Created by jonathanbrodie on 11/26/14.
  */
-public class Object extends Group {
+public class Object extends Group implements Serializable {
     @FXML
     private double velocityX;
     @FXML private double velocityY;

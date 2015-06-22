@@ -7,23 +7,37 @@ package game.AI;
 import game.*;
 import game.Object;
 
-public class EnemyIntelligence extends ArtificialIntelligence {
+public class EnemyIntelligence implements ArtificialIntelligence {
     private EnemyState currentState;
     private Enemy body;
 
     private int coolDownCount=0;
     private boolean coolingDown=false;
     private int coolDownWait=70;
-
-    private final Action GLOBAL=new Action(-1);
-
+    private int type=0;
 
     public EnemyIntelligence(EnemyState myState) {
         this.currentState=myState;
         this.body=myState.getEnemy();
         this.setAI(1);
     }
+    public EnemyIntelligence() {
+        this.setAI(1);
+    }
 
+    public void setAI(int newAI) {
+        this.type=newAI;
+    }
+    public int getAI() {
+        return this.type;
+    }
+    public void setCurrentState(EnemyState myState) {
+        this.currentState=myState;
+        this.body=myState.getEnemy();
+    }
+    public EnemyState getCurrentState()  {
+        return this.currentState;
+    }
     public void updateState(EnemyState myState) {
         this.currentState=myState;
         this.body=myState.getEnemy();
@@ -51,6 +65,12 @@ public class EnemyIntelligence extends ArtificialIntelligence {
         else {
             this.setAI(AI_TYPE_NORMAL);
         }
+        this.adjustCoolDown();
+
+        this.handleAIType();
+    }
+
+    protected void adjustCoolDown() {
         if (this.coolingDown) {
             this.coolDownCount+=1;
             if (coolDownCount >coolDownWait) {
@@ -58,12 +78,10 @@ public class EnemyIntelligence extends ArtificialIntelligence {
                 this.coolingDown=false;
             }
         }
-        this.handleAIType();
     }
-
-    private void handleAIType() {
+    protected final void handleAIType() {
        //EnemyState successor = this.currentState.getSuccessor();
-        int myAction=GLOBAL.ACTION_NO_ACTION;
+        int myAction=Action.ACTION_NO_ACTION;
         int nAI=this.getAI();
 
         switch (nAI) {
@@ -81,17 +99,21 @@ public class EnemyIntelligence extends ArtificialIntelligence {
                 int nConstant = 1;
                 if (this.getDistance(myHero, this.body) > 3) {
                     if (this.body.getLayoutX() - currentState.getHero().getLayoutX() >= 0) {
-                        myAction = GLOBAL.ACTION_MOVE_LEFT;
+                        myAction = Action.ACTION_MOVE_LEFT;
                     } else {
-                        myAction = GLOBAL.ACTION_MOVE_RIGHT;
+                        myAction = Action.ACTION_MOVE_RIGHT;
                     }
                 } else {
                     //do attack thingy
                     if (!this.coolingDown) {
-                        myAction=GLOBAL.ACTION_ATTACK;
+                        myAction=Action.ACTION_ATTACK;
                         this.coolingDown = true;
                     }
                 }
+                break;
+            case AI_TYPE_BOSS:
+                myAction=Action.ACTION_ATTACK_SPECIAL;
+                break;
         }
         this.body.addAction(new Action(myAction));
     }

@@ -1,4 +1,4 @@
-import game.WorldController;
+import LevelEdit.WorldController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -25,7 +25,7 @@ public class Main extends Application {
         WorldController controller = loader.getController();
         controller.setStage(primaryStage);
         primaryStage.setTitle("Super Mario Bros");
-        primaryStage.setScene(new Scene(root, 500, 500));
+        primaryStage.setScene(new Scene(root, 650, 500));
         primaryStage.show();
     }
 

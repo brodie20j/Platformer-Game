@@ -17,7 +17,7 @@ public class Level implements Serializable{
     private List<Block> blockList;
     private List<Enemy> enemyList;
     private List<Object> objectList;
-    private String levelName;
+    public String name;
     public Level() {
         this.blockList=new ArrayList<Block>();
         this.enemyList=new ArrayList<Enemy>();

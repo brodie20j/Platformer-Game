@@ -22,6 +22,23 @@ public class PreviewEngine {
         String currentKey;
         for (int i=0; i<keyList.size(); i++) {
             currentKey=keyList.get(i);
+            /*
+            Uncomment the following code when you're ready to start trying to switch from four hashtables to one
+            Object currentObject=graph.getObject(currentKey);
+
+            if (currentObject instanceof Enemy) {
+                Enemy newEnemy=(Enemy)currentObject;
+                myLevel.addEnemyToList(newEnemy);
+            }
+            else if (currentObject instanceof Block) {
+                Block newBlock=(Block)currentObject;
+                myLevel.addBlockToList(newBlock);
+            }
+            else {
+                myLevel.addObjectToList(currentObject);
+            }
+
+            */
             Class objectType=graph.getType(currentKey);
             Class objectID=graph.getID(currentKey);
             String objectClass=graph.getID(currentKey).getName();
@@ -30,7 +47,8 @@ public class PreviewEngine {
 
             //if we are instantiating an enemy
 
-            game.Object mySample=new Object(graph.getX(currentKey),graph.getY(currentKey));
+
+           Object mySample=new Object(graph.getX(currentKey),graph.getY(currentKey));
             //
             try {
                 System.out.println(objectClass);

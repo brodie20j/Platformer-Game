@@ -36,7 +36,14 @@ public class Door extends Object {
     }
 
     public void TransportHero(Hero myHero) {
-
+        myHero.setLayoutX(this.Ax);
+        myHero.setLayoutY(this.Ay);
+    }
+    public void openDoor() {
+        //door open animation here
+    }
+    public void closeDoor() {
+        //close door animation here
     }
 
 

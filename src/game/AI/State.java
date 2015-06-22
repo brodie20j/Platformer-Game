@@ -3,6 +3,7 @@ import game.*;
 import game.Object;
 import game.Block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,4 +47,12 @@ public class State {
     public List<Object> getObjectList() {
         return this.objectList;
     }
+    public List<Object> getCompleteList() {
+        List<Object> myList=new ArrayList<Object>();
+        myList.addAll(this.enemyList);
+        myList.addAll(this.objectList);
+        myList.addAll(this.blockList);
+        return myList;
+    }
+
 }

@@ -3,42 +3,28 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+
 <?import com.sun.javafx.scene.control.skin.InputField?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.ScrollPane?>
 
 <?import javafx.scene.control.TextField?>
-<GridPane fx:controller="game.WorldController"
+<?import javafx.scene.control.ListView?>
+<GridPane fx:controller="LevelEdit.WorldController"
+          fx:id="mainBoard"
           xmlns:fx="http://javafx.com/fxml"
           alignment="center"
           hgap="10"
-          vgap="10"
->
+          vgap="20"
+    >
     <Label fx:id="mainMenuLabel" text="Super Mario" GridPane.rowIndex="0" style="-fx-font: 10px Tahoma; " alignment="center" />
-    <ChoiceBox fx:id="fileMenu" value="File" GridPane.columnIndex="1"/>
-    <Label fx:id="nameLabel" text="Current Level:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <TextField fx:id="levelName" GridPane.rowIndex="2" GridPane.columnIndex="1" />
-    <Label fx:id="xLabel" text="X-Coordinate" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <Label fx:id="yLabel" text="Y-Coordinate" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <Label fx:id="xlevelLabel" text="X-Coordinate" GridPane.rowIndex="3" GridPane.columnIndex="2" style="-fx-font: 10px Tahoma; "/>
-    <Label fx:id="ylevelLabel" text="Y-Coordinate" GridPane.rowIndex="4" GridPane.columnIndex="2" style="-fx-font: 10px Tahoma; "/>
-    <Button fx:id = "deleteButton" GridPane.rowIndex="5" GridPane.columnIndex="2" text="Delete Object" onAction="#deleteObject" alignment="center"/>
+    <TextField fx:id="levelName" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+    <ListView fx:id="levelList" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+    <ScrollPane fx:id ="previewPane" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <Label fx:id="nameLabel" text="Current Level:" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-font: 10px Tahoma; "/>
+    <Label fx:id="xlevelLabel" text="X-Coordinate" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
+    <Label fx:id="ylevelLabel" text="Y-Coordinate" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
 
-    <TextField fx:id="xInput" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
-    <TextField fx:id="yInput" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-    <ChoiceBox fx:id="levelList" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
-    <Label fx:id="typeLabel" text="Type" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <ChoiceBox fx:id="typeInput" GridPane.rowIndex="5" GridPane.columnIndex="1">
-            </ChoiceBox>
-
-    <Label fx:id="idLabel" text="ID" GridPane.rowIndex="6" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <ChoiceBox fx:id="idInput" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
-
-    <Button fx:id = "addButton" GridPane.rowIndex="7" GridPane.columnIndex="1" text="Add Object" onAction="#addButton" />
-
-
-
-    <Button fx:id = "exitButton" GridPane.rowIndex="11" text="Exit" onAction="#exitButton" />
-    <ScrollPane fx:id ="previewPane" GridPane.rowIndex="10" GridPane.columnIndex="1"/>
+    <Button fx:id = "exitButton" GridPane.rowIndex="5" text="Exit" onAction="#exitButton" />
 </GridPane>
-

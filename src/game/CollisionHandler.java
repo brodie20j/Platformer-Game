@@ -83,38 +83,17 @@ public class CollisionHandler {
         Class objectclass=oObject2.getClass();
 
         if (objectclass.isAssignableFrom(BreakableBlock.class)) {
-
+            if (myHero.isAttacking()) {
+                oObject2.destroy();
+            }
             //do stuff here
         }
+
         if (oObject2.getSolid()) {
-            if (myHero.collisionDown(oObject2)) {
-                myHero.inAir=false;
-                myHero.setLayoutY(oObject2.getLayoutY() - myHero.getHeight());
-                if ((myHero.getVelocityY() != 0)) {
-                    myHero.setVelocityY(0);
-                }
-
-            }
-            else if (myHero.collisionUp(oObject2)) {
-                myHero.setVelocityY(0);
-
-                if (myHero.getLayoutY() < oObject2.getHeight() + oObject2.getLayoutY()) {
-                    myHero.setLayoutY(oObject2.getHeight() + oObject2.getLayoutY());
-                }
-
-            }
-            //now determine if we're colliding from sides
-            if (myHero.collisionRight(oObject2) && (!myHero.collisionDown(oObject2))) {
-                myHero.setVelocityX(0);
-                if (myHero.getLayoutX() + myHero.getWidth() > oObject2.getLayoutX())
-                    myHero.setLayoutX(oObject2.getLayoutX() - myHero.getWidth() - 1);
-            }
-            else if (myHero.collisionLeft(oObject2) && (!myHero.collisionDown(oObject2))) {
-
-                myHero.setVelocityX(0);
-                if (myHero.getLayoutX() < oObject2.getLayoutX() + oObject2.getWidth())
-                    myHero.setLayoutX(oObject2.getLayoutX() + oObject2.getWidth() + 1);
-            }
+            PhysicsEngine.solidObjectCollision(oObject2,myHero);
+        }
+        else if (oObject2 instanceof Enemy) {
+            handleCombat(myHero,(Enemy)oObject2);
         }
         else if (oObject2 instanceof Door) {
             if (myHero.getFacingUp()) {
@@ -122,7 +101,66 @@ public class CollisionHandler {
                 Transitions.DoorTransition((Door) oObject2,myHero);
             }
         }
+    }
+    public static void handleCollision(Enemy enemy, Object oObject2) {
+        Class objectclass=oObject2.getClass();
 
+        if (objectclass.isAssignableFrom(BreakableBlock.class)) {
+            if (enemy.isAttacking()) {
+                oObject2.destroy();
+            }
+            //do stuff here
+        }
+
+        if (oObject2.getSolid()) {
+            PhysicsEngine.solidObjectCollision(oObject2,enemy);
+        }
+
+    }
+    public static void handleCollision(Object oObject1, Object oObject2) {
+        Class objectclass=oObject2.getClass();
+
+
+        if (oObject2.getSolid()) {
+            PhysicsEngine.solidObjectCollision(oObject2,oObject1);
+        }
+
+    }
+    public static void handlePlayerEnemyCollision(Hero myHero, Enemy myEnemy) {
+        if (!myHero.getInvincibility()) {
+
+            if (myHero.getLayoutX() + myHero.getWidth() < myEnemy.getLayoutX() + (myEnemy.getWidth() / 2)) {
+                myHero.setLayoutX(myHero.getLayoutX() - myEnemy.getWidth());
+                myHero.setVelocityX(0);
+            } else if (myHero.getLayoutX() > myEnemy.getLayoutX() + (myEnemy.getWidth() / 2)) {
+                myHero.setLayoutX(myHero.getLayoutX() + myEnemy.getWidth());
+                myHero.setVelocityX(0);
+            }
+            myHero.setInvincibility(true);
+        }
+        else {
+
+        }
+    }
+    public static void handleCombat(Hero myHero, Enemy myEnemy) {
+        if (myEnemy.isAttacking() && myHero.isAttacking()) {
+            System.out.println("Nothing happens");
+        }
+        else if (myHero.isAttacking()) {
+            handleEnemyHit(myHero,myEnemy);
+        }
+        else {
+            handlePlayerHit(myHero, myEnemy);
+        }
+    }
+    public static void handleEnemyHit(Hero myHero, Enemy enemy) {
+        enemy.setHP(enemy.getHP()-myHero.getPower());
+
+
+    }
+    public static void handlePlayerHit(Hero myHero, Enemy enemy) {
+        handlePlayerEnemyCollision(myHero,enemy);
+        myHero.setCurrentHP(myHero.getCurrentHP()-enemy.getAttack());
     }
 
 

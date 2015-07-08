@@ -58,7 +58,7 @@ public class Engine {
         this.completeList.add(this.mainHero);
 
         //sort the big list by x position
-        Collections.sort(completeList,new ObjectComparator());
+        Collections.sort(completeList, new ObjectComparator());
         this.courseCompleted=false;
     }
 
@@ -124,12 +124,8 @@ public class Engine {
         this.marioStep();
 
         this.enemyListStep();
-        this.blockListStep();
         this.objectListStep();
         this.updateDrawList();
-
-
-
     }
     public List<Object> getDrawList() {
         return this.completeList;
@@ -154,10 +150,17 @@ public class Engine {
                 this.applyGravity(currentEnemy);
                 currentEnemy.updateAI(this.getEnemyState(currentEnemy));
                 currentEnemy.step();
-                this.handleCollisions(currentEnemy);
-                if (currentEnemy.getDead()) destroyObject(currentEnemy);
+                this.handleEnemyCollisions(currentEnemy);
+
 
             }
+
+            if (currentEnemy.getDead()) {
+                currentEnemy.getChildren().clear();
+                this.enemyList.remove(currentEnemy);
+                this.completeList.remove(currentEnemy);
+            }
+
 
         }
     }
@@ -169,6 +172,12 @@ public class Engine {
         //Only step through the objects on the screen.
         for (int i=0; i<this.objectList.size(); i++) {
             currentObject = this.objectList.get(i);
+            if (currentObject.isDestroyed()) {
+                this.objectList.remove(currentObject);
+                this.completeList.remove(currentObject);
+                currentObject=null;
+                continue;
+            }
             if (currentObject == this.mainHero) {
                 continue;
             }
@@ -176,14 +185,14 @@ public class Engine {
 
             if (Math.abs(currentObject.getLayoutX()-this.mainHero.getLayoutX()) < 500) {
                 currentObject.step();
-                this.handleCollisions(currentObject);
+                this.handleObjectCollisions(currentObject);
             }
             else {
                 if (currentObject instanceof HeroWeapon) {
-                    this.destroyObject(currentObject);
+                    //this.destroyObject(currentObject);
                 }
                 if (currentObject instanceof EnemyWeapon) {
-                    this.destroyObject(currentObject);
+                    //this.destroyObject(currentObject);
                 }
 
             }
@@ -248,16 +257,7 @@ public class Engine {
     return collisionList;
     }
     public void applyGravity(Object oObject) {
-        if (oObject.inAir) {
-            if (oObject.getVelocityY() < 0) {
-                System.out.print("foor");
-                oObject.setVelocityY(oObject.getVelocityY() * 0.972);
-            }
-            double Yaccel = oObject.getVelocityY() * 0.5;
-            if (Yaccel < 1) Yaccel = 1;
-            oObject.setVelocityY(oObject.getVelocityY() + Yaccel);
-
-        } else if (oObject.getVelocityY() >= 0) oObject.setVelocityY(0);
+        PhysicsEngine.gravity(oObject);
     }
     public void handleCollisions(Object oObject) {
         List<Object> tempBlockList = this.getCollisionDetection(oObject);
@@ -271,17 +271,11 @@ public class Engine {
             }
             else if ((oObject instanceof HeroWeapon) || (oObject instanceof EnemyWeapon)) {
                 if (currentBlock.getClass().isAssignableFrom(BreakableBlock.class)) {
-                    destroyObject(currentBlock);
-                    destroyObject(oObject);
+                    currentBlock.destroy();
+                    //destroyObject(oObject);
                     return;
                 }
-                if (oObject instanceof EnemyWeapon) {
-                    System.out.println("Enemy weapon instance");
-                    if (currentBlock instanceof Hero) {
-                        Enemy enemyWeapon=(Enemy) oObject;
-                        this.handlePlayerHit(enemyWeapon);
-                        }
-                }
+
             }
             else if (currentBlock.getSolid()) {
                 //COLLISION DETECTION: If the object is solid and oObject is in the air, we check if oObject is on top of
@@ -322,7 +316,7 @@ public class Engine {
             }
             else if (currentBlock instanceof Coin) {
                 this.setCoinCount(this.getCoinCount()+1);
-                this.destroyObject(currentBlock);
+                currentBlock.destroy();
             }
 
             else if (currentBlock instanceof HealthPotion) {
@@ -331,7 +325,7 @@ public class Engine {
                 if (oObject instanceof Hero) {
                      Hero myHero=((Hero) oObject);
                     myPotion.heal(myHero);
-                    this.destroyObject(myPotion);
+                    myPotion.destroy();
                 }
 
             }
@@ -342,6 +336,31 @@ public class Engine {
             oObject.inAir=true;
         }
     }
+    public void handleEnemyCollisions(Enemy enemy) {
+        List<Object> tempBlockList = this.getCollisionDetection(enemy);
+        enemy.inAir=true;
+        for (Object object : tempBlockList) {
+            CollisionHandler.handleCollision(enemy,object);
+        }
+
+    }
+    public void handleObjectCollisions(Object oObject) {
+        List<Object> tempBlockList = this.getCollisionDetection(oObject);
+        oObject.inAir=true;
+        for (Object object : tempBlockList) {
+            CollisionHandler.handleCollision(oObject,object);
+        }
+
+    }
+
+    public void handleHeroCollisions(Hero hero) {
+        List<Object> tempBlockList = this.getCollisionDetection(hero);
+        hero.inAir=true;
+        for (Object object : tempBlockList) {
+            CollisionHandler.handleCollision(hero,object);
+        }
+    }
+
     public void handleCollisions(Enemy oObject) {
         List<Object> tempBlockList = this.getCollisionDetection(oObject);
         Object currentBlock;
@@ -354,12 +373,12 @@ public class Engine {
             }
             else if (oObject instanceof EnemyWeapon) {
                 if (currentBlock.getClass().isAssignableFrom(BreakableBlock.class)) {
-                    destroyObject(currentBlock);
-                    destroyObject(oObject);
+                    //destroyObject(currentBlock);
+                    //destroyObject(oObject);
                     return;
                 }
                 else if (currentBlock instanceof Hero) {
-                        this.handlePlayerHit(oObject);
+                        this.handleCombat((Hero)currentBlock,oObject);
 
                 }
             }
@@ -524,7 +543,7 @@ public class Engine {
         //apply friction if on the ground?
         this.mainHero.setVelocityX(this.mainHero.getVelocityX() * 0.9);
 
-        this.handleCollisions(this.mainHero);
+        this.handleHeroCollisions(this.mainHero);
 
     }
     private void handleEnemyHit(Enemy enemy) {
@@ -552,41 +571,7 @@ public class Engine {
 
         }
     }
-    public boolean destroyObject(Block object) {
-        boolean bFound = false;
-        for (int i = 0; i < this.blockList.size(); i++) {
-            if (this.blockList.get(i) == object) {
-                bFound = true;
-                this.blockList.remove(object);
-            }
-        }
-        object.getChildren().clear();
-        return bFound;
-    }
-    public boolean destroyObject(Enemy object) {
-        boolean bFound = false;
-        for (int i = 0; i < this.enemyList.size(); i++) {
-            if (this.enemyList.get(i) == object) {
-                this.enemyList.remove(object);
-                break;
-            }
-        }
-        object.getChildren().clear();
-        object=null;
-        return bFound;
-    }
-    public boolean destroyObject(Object object) {
-        boolean bFound=false;
-        for (int i=0; i<this.objectList.size(); i++) {
-            if (this.objectList.get(i) == object) {
-                bFound=true;
-                this.objectList.remove(object);
-            }
-        }
-        while (object.getChildren().size() != 0) object.getChildren().clear();
-        object=null;
-        return bFound;
-    }
+
     public void Finish() {
         this.courseCompleted=true;
     }

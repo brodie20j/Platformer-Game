@@ -9,8 +9,6 @@ import java.io.*;
  */
 public class Level implements Serializable{
 
-    private double xTile=64;
-    private double yTile=64;
 
     private int groundConstant=12;
     private String backgroundString="";

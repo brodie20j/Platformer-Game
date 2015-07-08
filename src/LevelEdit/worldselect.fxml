@@ -16,12 +16,12 @@
           xmlns:fx="http://javafx.com/fxml"
           alignment="center"
           hgap="10"
-          vgap="20"
+          vgap="10"
     >
     <Label fx:id="mainMenuLabel" text="Super Mario" GridPane.rowIndex="0" style="-fx-font: 10px Tahoma; " alignment="center" />
     <TextField fx:id="levelName" GridPane.rowIndex="1" GridPane.columnIndex="0" />
     <ListView fx:id="levelList" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-    <ScrollPane fx:id ="previewPane" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+    <ScrollPane fx:id ="previewPane" GridPane.rowIndex="2" onMouseClicked="#getPosition" GridPane.columnIndex="1"/>
     <Label fx:id="nameLabel" text="Current Level:" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-font: 10px Tahoma; "/>
     <Label fx:id="xlevelLabel" text="X-Coordinate" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
     <Label fx:id="ylevelLabel" text="Y-Coordinate" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>

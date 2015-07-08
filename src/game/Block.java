@@ -33,6 +33,6 @@ public class Block extends game.Object {
 
     }
     public void step() {
-        //
+        super.step();
     }
 }

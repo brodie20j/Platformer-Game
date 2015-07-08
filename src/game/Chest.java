@@ -20,6 +20,7 @@ public class Chest extends Object {
     }
 
 
+
     public void giveTreasure() {
         if (!bOpen) {
             //Update image

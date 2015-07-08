@@ -10,6 +10,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.input.MouseEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -104,7 +105,9 @@ public class WorldController {
                 try {
                     addObject();
                 } catch (IOException e) {
+
                     System.out.println("Could not add Object!");
+                    e.printStackTrace();
                 }
             }
         });
@@ -401,5 +404,10 @@ public class WorldController {
         newStage.setTitle("Add Object");
         newStage.setScene(new Scene(root, 250, 250));
         newStage.show();
+    }
+    @FXML
+    void getPosition(MouseEvent event) {
+        System.out.println(event.getSceneX());
+        System.out.println(event.getSceneY());
     }
 }

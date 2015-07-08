@@ -18,16 +18,16 @@
           hgap="10"
           vgap="10"
         >
+    <Button fx:id = "addButton" GridPane.rowIndex="0" GridPane.columnIndex="0" text="Add Object" onAction="#addButton" />
 
-    <Label text="X-Coordinate" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <Label text="Y-Coordinate" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <TextField fx:id="xInput" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-    <TextField fx:id="yInput" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
-    <Label text="Type" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <Label text="ID" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
-    <ChoiceBox fx:id="typeInput" GridPane.rowIndex="3" GridPane.columnIndex="1">
+    <Label text="Type" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-font: 10px Tahoma; "/>
+
+    <ChoiceBox fx:id="typeInput" GridPane.rowIndex="1" GridPane.columnIndex="1">
     </ChoiceBox>
-    <ChoiceBox fx:id="idInput" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    <ChoiceBox fx:id="idInput" GridPane.rowIndex="1" GridPane.columnIndex="2">
+    </ChoiceBox>
+    <Label fx:id="constructorLabel" text="" GridPane.rowIndex="2"/>
+    <GridPane fx:id="addBoard" GridPane.rowIndex="3"/>
 
-    <Button fx:id = "addButton" GridPane.rowIndex="5" GridPane.columnIndex="1" text="Add Object" onAction="#addButton" />
+
 </GridPane>

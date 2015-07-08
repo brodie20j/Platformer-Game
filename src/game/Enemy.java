@@ -24,8 +24,6 @@ public class Enemy extends Object {
     private boolean bAttacking=false;
     private int runSpeed=4;
 
-    private final Action GLOBAL=new Action(-1);
-
 
     public Enemy(double startX, double startY) {
         this.setLayoutX(startX);
@@ -67,6 +65,7 @@ public class Enemy extends Object {
     }
     @Override
     public void step() {
+        super.step();
         if (myAI != null)  {
             this.myAI.step();
         }

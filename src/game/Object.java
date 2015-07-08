@@ -15,7 +15,8 @@ public class Object extends Group implements Serializable {
     private double velocityX;
     @FXML private double velocityY;
     private int layer=0;
-    private ImageView imageView;
+    //make this transient so we don't have to serialize image views
+    private transient ImageView imageView;
     private boolean solid=false;
     public boolean inAir=true;
     public Object(double startX, double startY) {
@@ -39,6 +40,7 @@ public class Object extends Group implements Serializable {
     public double getHeight() {
         return this.getBoundsInParent().getHeight();
     }
+    private boolean bDestroyed=false;
 
     public void step() {
 
@@ -120,6 +122,13 @@ public class Object extends Group implements Serializable {
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         this.getChildren().add(imageView);
+    }
+    public void destroy() {
+        this.bDestroyed=true;
+        this.getChildren().clear();
+    }
+    public boolean isDestroyed() {
+        return this.bDestroyed==true;
     }
 
 }
